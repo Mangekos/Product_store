@@ -4,10 +4,24 @@ from rest_framework import serializers
 from product.models import Product, Categories, SubCategories, ShoppingCart
 
 
+class SubCategoriesSerializer(serializers.ModelSerializer):
+    """Сериализер Подкатегорий."""
+
+    class Meta:
+        model = SubCategories
+        fields: str = (
+            "id",
+            "name",
+            "slug",
+            "image",
+        )
+
+
 class CategoriesSerializer(serializers.ModelSerializer):
     """Сериализер Категорий."""
 
-    sub_categories = serializers.SerializerMethodField()
+    # sub_categories = serializers.SerializerMethodField()
+    sub_categories = SubCategoriesSerializer(many=True)
 
     class Meta:
         model = Categories
@@ -21,25 +35,6 @@ class CategoriesSerializer(serializers.ModelSerializer):
 
     def get_sub_categories(self, obj) -> SubCategories.name:
         return SubCategoriesSerializer(obj.sub_categories, many=True).data
-
-
-class SubCategoriesSerializer(serializers.ModelSerializer):
-    """Сериализер Подкатегорий."""
-
-    # category = serializers.SerializerMethodField()
-
-    class Meta:
-        model = SubCategories
-        fields: str = (
-            "id",
-            "name",
-            "slug",
-            # "category",
-            "image",
-        )
-
-    # def get_category(self, obj) -> Categories.name:
-    #     return obj.category.name
 
 
 class ProductSerializer(serializers.ModelSerializer):
